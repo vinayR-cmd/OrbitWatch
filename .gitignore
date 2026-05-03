@@ -1,0 +1,49 @@
+# node_modules
+node_modules/
+frontend/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.*.local
+backend/.env
+frontend/.env
+
+# Build outputs
+dist/
+frontend/dist/
+build/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
+.pytest_cache/
+
+# Model weights (too large for git)
+models/*.pth
+models/*.pt
+*.pth
+*.pt
+
+# Data files (too large for git)
+data/raw/
+data/processed/*.parquet
+data/training/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+stderr.txt
+structure.txt
+debug_output.json
+response.json
+test2.json
+test_norad.json
+rk45_validation_report.txt

@@ -1,0 +1,10 @@
+{
+  "n_features": 7,
+  "d_model": 128,
+  "nhead": 4,
+  "num_layers": 3,
+  "dim_feedforward": 256,
+  "dropout": 0.1,
+  "seq_len": 20,
+  "out_dim": 3
+}

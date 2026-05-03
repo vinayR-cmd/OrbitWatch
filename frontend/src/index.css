@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #0f1629;
+    --bg-card: #141c35;
+    --accent-blue: #1e88e5;
+    --accent-cyan: #00e5ff;
+    --accent-orange: #ff6d00;
+    --accent-green: #00e676;
+    --accent-yellow: #ffea00;
+    --accent-red: #f44336;
+    --text-primary: #e8eaf6;
+    --text-secondary: #7986cb;
+    --border-color: #1a2040;
+  }
+  
+  body {
+    @apply bg-space-primary text-text-primary;
+  }
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #0a0e1a;
+}
+
+/* Custom Scrollbar for Dashboard */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #080d1c;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a2845;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00e5ff;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Cesium overrides to prevent UI clutter */
+.cesium-viewer-bottom {
+  display: none !important;
+}
+.cesium-widget-credits {
+  display: none !important;
+}

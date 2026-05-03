@@ -1,0 +1,14 @@
+sgp4
+pandas
+numpy
+pyarrow
+fastparquet
+spacetrack
+scikit-learn
+torch
+fastapi
+uvicorn
+python-dotenv
+httpx
+scipy
+websockets

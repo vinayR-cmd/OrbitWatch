@@ -8,7 +8,7 @@ const AppContent = () => {
   const context = useContext(MissionContext);
   const [toast, setToast] = useState<{msg: string, type: 'success'|'error'} | null>(null);
 
-  // Initialize WEBSOCKET connection conditionally
+  // Initialize HTTP polling for live NORAD analysis (replaces WebSocket)
   useWebSocket(context?.missionInput?.mode === 'norad' ? context.missionInput.noradId : undefined);
 
   useEffect(() => {

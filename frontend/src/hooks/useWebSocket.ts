@@ -31,12 +31,6 @@ export function useWebSocket(noradId?: number) {
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-
-          // Skip control messages — only process real analysis results
-          if (data.type === 'status' || data.type === 'heartbeat' || !data.mission) {
-            return;
-          }
-
           if (!data.error) {
             // Map snake_case to camelCase
             if (data.mission) {

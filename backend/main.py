@@ -323,14 +323,7 @@ def analyze_prelaunch(req: PrelaunchRequest):
 @app.websocket("/ws/live/{norad_id}")
 async def live_analysis(websocket: WebSocket, norad_id: int):
     await websocket.accept()
-
-    # Send immediate acknowledgment to keep connection alive
-    await websocket.send_json({
-        "type": "status",
-        "message": "Analysis started",
-        "norad_id": norad_id
-    })
-
+    
     try:
         while True:
             # Re-fetch latest to get any slight tweaks
@@ -341,17 +334,9 @@ async def live_analysis(websocket: WebSocket, norad_id: int):
                 await websocket.send_json(result)
             else:
                 await websocket.send_json({"error": "Failed to fetch live TLE"})
-
-            for _ in range(20):        # 20 × 3s = 60s between refreshes
-                await asyncio.sleep(3)
-                try:
-                    await websocket.send_json({
-                        "type": "heartbeat",
-                        "status": "alive"
-                    })
-                except Exception:
-                    break
-
+                
+            await asyncio.sleep(60)
+            
     except WebSocketDisconnect:
         pass
     except RuntimeError as e:

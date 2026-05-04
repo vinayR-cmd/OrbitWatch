@@ -336,8 +336,24 @@ async def live_analysis(websocket: WebSocket, norad_id: int):
             # Re-fetch latest to get any slight tweaks
             tle = fetch_tle_by_norad(norad_id)
             if tle:
-                # Run heavy CPU logic in a thread so the WebSocket ping/pong stays alive
-                result = await asyncio.to_thread(analyze_logic, tle, None)
+                # Start analysis in background thread
+                analysis_task = asyncio.create_task(
+                    asyncio.to_thread(analyze_logic, tle, None)
+                )
+
+                # Send heartbeats while analysis runs to keep connection alive
+                while not analysis_task.done():
+                    await asyncio.sleep(2)
+                    try:
+                        await websocket.send_json({
+                            "type": "heartbeat",
+                            "status": "analyzing"
+                        })
+                    except Exception:
+                        analysis_task.cancel()
+                        break
+
+                result = await analysis_task
                 await websocket.send_json(result)
             else:
                 await websocket.send_json({"error": "Failed to fetch live TLE"})

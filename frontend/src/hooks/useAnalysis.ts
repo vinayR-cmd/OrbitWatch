@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import axios from 'axios';
 import { MissionContext } from '../context/MissionContext';
-import { MOCK_RESULT } from '../utils/mockData';
+
 
 import { API_ENDPOINTS } from '../config/api';
 
@@ -37,7 +37,7 @@ export function useAnalysis() {
 
         const res = await axios.post(API_ENDPOINTS.analyzeNorad, {
           norad_id: currentInput.noradId
-        }, { timeout: 120000 });
+        }, { timeout: 90000 });
 
         const data = res.data;
         // Map snake_case to camelCase
@@ -102,7 +102,7 @@ export function useAnalysis() {
           launch_time: currentInput.launchTime || new Date().toISOString()
         };
 
-        const res = await axios.post(API_ENDPOINTS.analyzePrelaunch, payload, { timeout: 120000 });
+        const res = await axios.post(API_ENDPOINTS.analyzePrelaunch, payload, { timeout: 90000 });
         const data = res.data;
         // Map snake_case to camelCase
         if (data.mission) {
@@ -169,26 +169,10 @@ export function useAnalysis() {
         setAnalysisResult(data);
       }
     } catch (err: any) {
-      console.warn("Backend unreachable or error occurred, using mock data.", err);
-      setIsDemoMode(true);
-      if (currentInput.mode === 'prelaunch') {
-        const mockForPrelaunch = {
-          ...MOCK_RESULT,
-          mission: {
-            ...MOCK_RESULT.mission,
-            name: currentInput.missionName ?? 'My Mission',
-            altitudeKm: currentInput.altitudeKm ?? 550,
-            inclinationDeg: currentInput.inclinationDeg ?? 53,
-            position: generateSyntheticPosition(
-              currentInput.altitudeKm ?? 550,
-              currentInput.inclinationDeg ?? 53
-            ),
-          },
-        };
-        setAnalysisResult(mockForPrelaunch as any); // using any in case of strict type mismatch
-      } else {
-        setAnalysisResult(MOCK_RESULT);
-      }
+      const msg = err?.response?.data?.detail || err?.message || 'Analysis failed';
+      console.error('Analysis error:', msg, err);
+      setError(msg);
+      // Do NOT fall back to mock data — surface the real error to the user
     } finally {
       setIsLoading(false);
     }

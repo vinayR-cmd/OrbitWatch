@@ -19,16 +19,12 @@ export function useWebSocket(noradId?: number) {
       if (cancelledRef.current) return;
 
       setIsLoading(true);
-      const controller = new AbortController();
-      const abortTimeoutId = setTimeout(() => controller.abort(), 90000);
       try {
         const response = await fetch(API_ENDPOINTS.analyzeNorad, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ norad_id: noradId }),
-          signal: controller.signal,
         });
-        clearTimeout(abortTimeoutId);
 
         if (!response.ok) throw new Error(`Analysis failed: ${response.status}`);
 
@@ -89,23 +85,12 @@ export function useWebSocket(noradId?: number) {
 
           setAnalysisResult(data);
         }
-      } catch (error: unknown) {
-        clearTimeout(abortTimeoutId);
-        if (error instanceof Error && error.name === 'AbortError') {
-          console.error('Analysis timed out after 90 seconds — retrying in 30s');
-        } else {
-          console.error('Analysis fetch error:', error);
-        }
-        // Do NOT fall back to mock data — stay in loading state and retry
-        if (!cancelledRef.current) {
-          setIsLoading(false);
-          timeoutRef.current = setTimeout(fetchAnalysis, 30000);
-        }
-        return;
+      } catch (error) {
+        console.error('Analysis poll error:', error);
       } finally {
         if (!cancelledRef.current) {
           setIsLoading(false);
-          // Poll again after 60 seconds on success
+          // Poll again after 60 seconds
           timeoutRef.current = setTimeout(fetchAnalysis, 60000);
         }
       }

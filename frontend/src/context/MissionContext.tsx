@@ -7,6 +7,7 @@ import {
   ConjunctionEvent,
   SettingsState
 } from '../types';
+import { MOCK_RESULT } from '../utils/mockData';
 import { syncFormatterSettings } from '../utils/format';
 
 export const DEFAULT_SETTINGS: SettingsState = {
